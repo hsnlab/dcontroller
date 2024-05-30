@@ -322,6 +322,11 @@ func RegisterCollection(...){
 - Watch implements a rich API that specifies the type of an event (create, update, delete, generic): https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.18.2/pkg/handler#example-Funcs (Controller removes the event type and generates a ~reconcile.Request~ that does not contain the type any more)
 - fake object source for testing: https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.18.2/pkg/source#example-Channel, maybe also https://pkg.go.dev/k8s.io/client-go/tools/cache/testing#FakeControllerSource, https://github.com/kubernetes-sigs/controller-runtime/blob/main/pkg/source/source_test.go
 
+** metacontroller
+
+- Metacontroller is an add-on for Kubernetes that makes it easy to write and deploy custom controllers: https://metacontroller.github.io/metacontroller/intro.html
+- CompositeController does something similar of what we want (almost): https://metacontroller.github.io/metacontroller/api/compositecontroller.html
+
 ** mongodb golang driver
 - docs: https://pkg.go.dev/go.mongodb.org/mongo-driver@v1.15.0/mongo
 - aggregator pipeline primitives: https://www.mongodb.com/resources/products/capabilities/aggregation-pipeline
