@@ -10,6 +10,10 @@
 #+TITLE: Declarative Kubernetes controllers
 #+AUTHOR:
 
+Preliminary design for the declarative Kubernetes controller runtime. The main goal is to reduce the mental overhead of writing Kubernetes controllers, by providing simple automations to eliminate some of the repetitive code that must be written when coding against the upstream [controller-runtime](https://github.com/kubernetes-sigs/controller-runtime) project. The final goal is to let anyone with minimal Go skills to write NoCode or LowCode style.
+
+The main tools here are *declarative Kubernetes API translation* and *incremental reconciliation*. Declarative Kubernetes API translation allows to view the Kubernetes API as a NoSQL database and run simple declarative queries on it. This can be done by registering an aggregation pipeline (inspired by [[https://www.mongodb.com/docs/manual/core/aggregation-pipeline][MongoDB aggregators]] to map the Kubernetes API resources to a *view* of interest to the controller. These views are dynamically maintained by the declarative controller runtime, by running the aggregation pipeline on the watch events automatically installed for the base Kubernetes API resources on top of which the view is defined on. Incremental reconciliation then means that the controller can watch the incremental changes to the views, instead of the raw ("materialized") views, which simplifies writing [[https://hackernoon.com/level-triggering-and-reconciliation-in-kubernetes-1f17fe30333d][level-triggered conrollers]].
+
 # Describe your change here.  This is purposefully freeform: we want
 # enough information to evaluate the design, but not so much that you're
 # annoyed by the overall design process and decide to bake cookies instead.
@@ -197,6 +201,8 @@ func main() {
 
 * Declarative API translation
 
+Query language usage alternatives:
+
 1. ~@aggregate~ works on multiple collections simultaneously
    - input is the Cartesian product ~CD x CM x DP~ -- inefficient
    - first join and then map
@@ -247,6 +253,7 @@ func main() {
          dpName: "$CD.dpName"
          resourceVersion: "$CM.resourceVersion"
   #+end_src
+
 3. ~@aggregate~ works on multiple collections simultaneously:
    - input is the Cartesian product ~CD x CM x DP~ -- inefficient
    - first map and then join
