@@ -197,80 +197,85 @@ func main() {
 
 * Declarative API translation
 
-#+begin_src yaml
----
-# @aggregate works on multiple collections simultaneously: input is the Cartesian product CD x CM x DP -- inefficient
-# first join and then map
-- "@map":
-    CD: "$CD"
-    CM: "$CM"
-    DP: "$DP"
-- "@match":
-    "@and":
-      - {"@eq": ["$CD.spec.cmName", "$CM.medatata.name"]}
-      - {"@eq": ["$CD.medatata.namespace", "$CM.medatata.namespace"]}
-      - {"@eq": ["$CD.spec.dpName", "$DP.medatata.name"]}
-      - {"@eq": ["$CD.medatata.namespace", "$DP.medatata.namespace"]}
-- "@map":
-    name: "$CD.medatata.name"
-    namespace: "$CD.medatata.namespace"
-    dpName: "$CD.spec.dpName"
-    resourceVersion: "$CM.medatata.resourceVersion"
----
-# @aggregate works on multiple collections simultaneously: input is the Cartesian product CD x CM x DP -- inefficient
-# first map and then join
-- "@map":
-    CD:
-      name: "$CD.metadata.name"
-      namespace: "$CD.metadata.namespace"
-      cmName: "$CD.spec.cmName"
-      dpName: "$CD.spec.dpName"
-    CM: 
-      name: "$CM.metadata.name"
-      namespace: "$CM.metadata.namespace"
-      resourceVersion: "$CM.medatata.resourceVersion"
-    DP:
-      name: "$DP.metadata.name"
-      namespace: "DP.metadata.namespace"
-- "@match":
-    "@and":
-      - {"@eq": ["$CD.cmName", "$CM.name"]}
-      - {"@eq": ["$CD.namespace", "$CM.namespace"]}
-      - {"@eq": ["$CD.dpName", "$DP.name"]}
-      - {"@eq": ["$CD.namespace", "$DP.namespace"]}
-- "@map":
-    name: "$CD.name"
-    namespace: "$CD.namespace"
-    dpName: "$CD.dpName"
-    resourceVersion: "$CM.resourceVersion"
----
-# @aggregate works on multiple collections simultaneously: input is the Cartesian product CD x CM x DP -- inefficient
-# first map and then join
-- "@map":
-    CD:
-      name: "$CD.metadata.name"
-      namespace: "$CD.metadata.namespace"
-      cmName: "$CD.spec.cmName"
-      dpName: "$CD.spec.dpName"
-    CM: 
-      name: "$CM.metadata.name"
-      namespace: "$CM.metadata.namespace"
-      resourceVersion: "$CM.medatata.resourceVersion"
-    DP:
-      name: "$DP.metadata.name"
-      namespace: "DP.metadata.namespace"
-- "@match":
-    "@and":
-      - {"@eq": ["$CD.cmName", "$CM.name"]}
-      - {"@eq": ["$CD.namespace", "$CM.namespace"]}
-      - {"@eq": ["$CD.dpName", "$DP.name"]}
-      - {"@eq": ["$CD.namespace", "$DP.namespace"]}
-- "@map":
-    name: "$CD.name"
-    namespace: "$CD.namespace"
-    dpName: "$CD.dpName"
-    resourceVersion: "$CM.resourceVersion"
-#+end_src
+1. ~@aggregate~ works on multiple collections simultaneously
+   - input is the Cartesian product ~CD x CM x DP~ -- inefficient
+   - first join and then map
+     #+begin_src yaml
+     - "@map":
+         CD: "$CD"
+         CM: "$CM"
+         DP: "$DP"
+     - "@match":
+         "@and":
+           - {"@eq": ["$CD.spec.cmName", "$CM.medatata.name"]}
+           - {"@eq": ["$CD.medatata.namespace", "$CM.medatata.namespace"]}
+           - {"@eq": ["$CD.spec.dpName", "$DP.medatata.name"]}
+           - {"@eq": ["$CD.medatata.namespace", "$DP.medatata.namespace"]}
+     - "@map":
+         name: "$CD.medatata.name"
+         namespace: "$CD.medatata.namespace"
+         dpName: "$CD.spec.dpName"
+         resourceVersion: "$CM.medatata.resourceVersion"
+  #+end_src
+
+2. ~@aggregate~ works on multiple collections simultaneously:
+   - input is the Cartesian product CD x CM x DP -- inefficient
+   - first map and then join
+     #+begin_src yaml
+     - "@map":
+         CD:
+           name: "$CD.metadata.name"
+           namespace: "$CD.metadata.namespace"
+           cmName: "$CD.spec.cmName"
+           dpName: "$CD.spec.dpName"
+         CM: 
+           name: "$CM.metadata.name"
+           namespace: "$CM.metadata.namespace"
+           resourceVersion: "$CM.medatata.resourceVersion"
+         DP:
+           name: "$DP.metadata.name"
+           namespace: "DP.metadata.namespace"
+     - "@match":
+         "@and":
+           - {"@eq": ["$CD.cmName", "$CM.name"]}
+           - {"@eq": ["$CD.namespace", "$CM.namespace"]}
+           - {"@eq": ["$CD.dpName", "$DP.name"]}
+           - {"@eq": ["$CD.namespace", "$DP.namespace"]}
+     - "@map":
+         name: "$CD.name"
+         namespace: "$CD.namespace"
+         dpName: "$CD.dpName"
+         resourceVersion: "$CM.resourceVersion"
+  #+end_src
+3. ~@aggregate~ works on multiple collections simultaneously:
+   - input is the Cartesian product ~CD x CM x DP~ -- inefficient
+   - first map and then join
+     #+begin_src yaml
+     - "@map":
+         CD:
+           name: "$CD.metadata.name"
+           namespace: "$CD.metadata.namespace"
+           cmName: "$CD.spec.cmName"
+           dpName: "$CD.spec.dpName"
+         CM: 
+           name: "$CM.metadata.name"
+           namespace: "$CM.metadata.namespace"
+           resourceVersion: "$CM.medatata.resourceVersion"
+         DP:
+           name: "$DP.metadata.name"
+           namespace: "DP.metadata.namespace"
+     - "@match":
+         "@and":
+           - {"@eq": ["$CD.cmName", "$CM.name"]}
+           - {"@eq": ["$CD.namespace", "$CM.namespace"]}
+           - {"@eq": ["$CD.dpName", "$DP.name"]}
+           - {"@eq": ["$CD.namespace", "$DP.namespace"]}
+     - "@map":
+         name: "$CD.name"
+         namespace: "$CD.namespace"
+         dpName: "$CD.dpName"
+         resourceVersion: "$CM.resourceVersion"
+     #+end_src
 
 * Implementation
 
