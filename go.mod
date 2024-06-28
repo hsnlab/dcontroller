@@ -30,7 +30,7 @@ require (
 	sigs.k8s.io/yaml v1.3.0
 )
 
-require golang.org/x/mod v0.15.0
+require golang.org/x/mod v0.18.0
 
 require (
 	github.com/antlr4-go/antlr/v4 v4.13.0 // indirect
