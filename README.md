@@ -1,6 +1,8 @@
 <!-- [![Go Report Card](https://goreportcard.com/badge/sigs.k8s.io/controller-runtime)](https://goreportcard.com/report/sigs.k8s.io/controller-runtime) -->
 <!-- [![godoc](https://pkg.go.dev/badge/sigs.k8s.io/controller-runtime)](https://pkg.go.dev/sigs.k8s.io/controller-runtime) -->
 
+> **Development has been moved to https://github.com/l7mp/dcontroller. This repo is now in archive mode and will go away soon.**
+
 # Δ-controller: A NoCode/LowCode Kubernetes controller framework
 
 Δ-controller is a framework to simplify the design, implementation and maintenance of Kubernetes
