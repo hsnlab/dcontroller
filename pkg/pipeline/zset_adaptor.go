@@ -171,8 +171,8 @@ func (p *Pipeline) ConvertZSetToDelta(zset *dbsp.DocumentZSet, target schema.Gro
 // When these are converted to deltas, we get separate Add and Delete entries for the same
 // primary key (namespace/name), but with no guaranteed ordering. This creates ambiguity:
 //
-//   - delete + add → UPDATE (object existed, now has new content)
-//   - add + delete → NO-OP (object was transiently created and destroyed in the same batch)
+//   - delete + add -> UPDATE (object existed, now has new content)
+//   - add + delete -> NO-OP (object was transiently created and destroyed in the same batch)
 //
 // Both sequences produce identical delta lists, but require different reconciliation actions.
 // Content-based comparison fails when documents contain dynamic fields (e.g., @now timestamps)
@@ -184,8 +184,8 @@ func (p *Pipeline) ConvertZSetToDelta(zset *dbsp.DocumentZSet, target schema.Gro
 // whether an object existed prior to this batch, which determines the semantic meaning of
 // add+delete pairs:
 //
-//   - If object existed → it's an UPDATE (the delete removes old state, add provides new state)
-//   - If object didn't exist → it's TRANSIENT (created and destroyed within the batch, emit nothing)
+//   - If object existed -> it's an UPDATE (the delete removes old state, add provides new state)
+//   - If object didn't exist -> it's TRANSIENT (created and destroyed within the batch, emit nothing)
 //
 // # Algorithm
 //
@@ -272,18 +272,18 @@ func (p *Pipeline) Reconcile(ds []object.Delta) ([]object.Delta, error) {
 			// else: deleting non-existent object - silently skip
 
 		case hasAdds && hasDeletes:
-			// CRITICAL DISAMBIGUATION using cache state:
+			// Disambiguate using cache state
 			if ops.existedBefore {
-				// Object existed → this is an UPDATE (delete old + add new)
+				// Object existed -> this is an UPDATE (delete old + add new)
 				d := ops.adds[len(ops.adds)-1]
 				if err := p.targetCache.Add(d.Object); err != nil {
 					return nil, err
 				}
 				deltaCache[key] = object.Delta{Object: d.Object, Type: object.Upserted}
 			}
-			// else: Object didn't exist → TRANSIENT (add + delete in same batch = no-op)
-			// The object was created and destroyed within this delta batch,
-			// so it should never reach the target. Emit nothing.
+			// else: Object didn't exist -> TRANSIENT (add + delete in same batch =
+			// no-op) The object was created and destroyed within this delta batch, so
+			// it should never reach the target. Emit nothing.
 		}
 	}
 
